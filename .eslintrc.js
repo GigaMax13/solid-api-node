@@ -8,8 +8,7 @@ module.exports = {
   extends: [
     'plugin:@typescript-eslint/recommended',
     'prettier/@typescript-eslint',
-    'prettier-standard',
-    'standard'
+    'prettier-standard'
   ],
   globals: {
     Atomics: 'readonly',
@@ -19,5 +18,7 @@ module.exports = {
     ecmaVersion: 2018,
     sourceType: 'module'
   },
-  rules: {}
+  rules: {
+    'no-useless-constructor': 0
+  }
 }
