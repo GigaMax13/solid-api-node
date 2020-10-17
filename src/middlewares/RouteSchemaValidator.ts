@@ -1,18 +1,22 @@
-import joi from 'joi'
 import { NextFunction, Request, Response } from 'express'
+import { AnySchema } from 'joi'
+
+export interface IJoiSchema extends AnySchema {
+  _ids: {
+    _byId: Map<string, AnySchema>
+    _byKey: Map<string, AnySchema>
+  }
+}
+
+export type MiddlewareFunction = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => void
 
 export class RouteSchemaValidator {
-  static validate(
-    schema: joi.Schema
-  ): (req: Request, res: Response, next: NextFunction) => void {
+  static validate(schema: IJoiSchema): MiddlewareFunction {
     return (req, res, next) => {
-      /*
-        TODO
-        find a better way to access the _ids property
-       */
-
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       const data = [...schema._ids._byKey.keys()]
         .map(key => ({
           [key]: req[key]
