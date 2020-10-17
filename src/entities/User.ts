@@ -13,7 +13,7 @@ export class User {
   public name: string
   public pass: string
 
-  constructor(props: IUserDTO, id?: string) {
+  constructor(props: Omit<User, 'id'>, id?: string) {
     Object.assign(this, props)
 
     if (!id) {
