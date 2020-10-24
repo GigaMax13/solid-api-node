@@ -1,6 +1,7 @@
-import { IMailProvider, IMessage } from '../IMailProvider'
 import nodemailer from 'nodemailer'
 import Mail from 'nodemailer/lib/mailer'
+
+import { IMessage, IMailProvider } from '../IMailProvider'
 import { MAILTRAP_USER, MAILTRAP_PASS } from '../../utils/Environment'
 
 export class MailProvider implements IMailProvider {
