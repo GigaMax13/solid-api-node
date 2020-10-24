@@ -1,12 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { AnySchema } from 'joi'
-
-export interface IJoiSchema extends AnySchema {
-  _ids: {
-    _byId: Map<string, AnySchema>
-    _byKey: Map<string, AnySchema>
-  }
-}
+import { ObjectSchema, Schema } from 'joi'
 
 export type MiddlewareFunction = (
   req: Request,
@@ -15,18 +8,20 @@ export type MiddlewareFunction = (
 ) => void
 
 export class RouteSchemaValidator {
-  static validate(schema: IJoiSchema): MiddlewareFunction {
+  static validate(schema: ObjectSchema<Schema>): MiddlewareFunction {
     return (req, res, next) => {
-      const data = [...schema._ids._byKey.keys()]
-        .map(key => ({
-          [key]: req[key]
-        }))
-        .reduce((current, total) => ({
-          ...current,
-          ...total
-        }))
+      const data = ['body', 'params', 'query'].reduce((acc, key) => {
+        if (Object.entries(req[key]).length) {
+          return {
+            [key]: req[key],
+            ...acc
+          }
+        }
 
-      const validation = schema.validate(data)
+        return acc
+      }, {})
+
+      const validation = schema.unknown(true).validate(data)
       const { error } = validation
 
       if (!error) {
